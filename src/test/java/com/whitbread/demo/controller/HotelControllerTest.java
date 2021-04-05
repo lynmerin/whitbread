@@ -2,6 +2,7 @@ package com.whitbread.demo.controller;
 
 import com.whitbread.demo.model.Hotel;
 import com.whitbread.demo.model.HotelList;
+import com.whitbread.demo.service.impl.HotelServiceImpl;
 import com.whitbread.demo.util.HotelTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ public class HotelControllerTest {
     WebTestClient webTestClient;
 
     @MockBean
-    private HotelService service;
+    private HotelServiceImpl service;
 
     @Test
     public void getSingleHotelValidCode() throws Exception {
@@ -210,6 +211,7 @@ public class HotelControllerTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("hotelCodes", "ABEAIB,BANWOB");
         map.add("facilityCodes", "LFT");
+        map.add("sortByTripAdvisor", "ASC");
         HotelList result = webTestClient.get()
                 .uri(uriBuilder ->
                         uriBuilder

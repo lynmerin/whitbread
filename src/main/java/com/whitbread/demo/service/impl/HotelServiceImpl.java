@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +27,13 @@ public class HotelServiceImpl implements HotelService {
         this.loadHotelApi = loadHotelApi;
     }
 
+    /**
+     * Service method to call from the controller to get the hotel details based on filter and soting.
+     * @param hotelCodes
+     * @param facilityCodes
+     * @param sortByTripAdvisor
+     * @return
+     */
     @Override
     public HotelList getHotelDetails(List<String> hotelCodes, List<String> facilityCodes, String sortByTripAdvisor) {
         if (!CollectionUtils.isEmpty(hotelCodes)) {
@@ -43,11 +49,21 @@ public class HotelServiceImpl implements HotelService {
         return null;
     }
 
+    /**
+     * To load the list of hotels from an external API
+     * @param hotelCodes
+     * @return
+     */
     private HotelList loadHotelExternalApi(List<String> hotelCodes) {
         String hotelCodesAsParam = hotelCodes.stream().map(String::toUpperCase).collect(Collectors.joining(","));
         return loadHotelApi.get().uri("?hotelCodes=" + hotelCodesAsParam).retrieve().bodyToMono(HotelList.class).block(REQUEST_TIMEOUT);
     }
 
+    /**
+     * TO filter the hotel List based on list of facilities
+     * @param facilityCodes
+     * @param listToBeFiltered
+     */
     private void filterHotelsWithFacility(List<String> facilityCodes, HotelList listToBeFiltered) {
         List<Hotel> hotelsFilteredList = listToBeFiltered.getHotels().stream().filter(hotel ->
                 hotel.getFacilities().stream().map(Facility::getCode).collect(Collectors.toList()).containsAll(facilityCodes)
@@ -56,8 +72,12 @@ public class HotelServiceImpl implements HotelService {
         listToBeFiltered.setTotal(hotelsFilteredList.size());
     }
 
+    /**
+     * Sorting the Hotel list ASC or DESC based on the parameter passed
+     * @param sortByTripAdvisor
+     * @param listToBeSorted
+     */
     private void sortHotelListBasedOnAdvisorRating(String sortByTripAdvisor, HotelList listToBeSorted) {
-        List<Hotel> sortedList = new ArrayList<>();
         if ("ASC".equalsIgnoreCase(sortByTripAdvisor))
             listToBeSorted.getHotels().sort(Comparator.comparingDouble((Hotel o) -> o.getTripAdvisor().getRating()).thenComparing(Comparator.comparing(Hotel::getCode)));
          else if ("DESC".equalsIgnoreCase(sortByTripAdvisor))
