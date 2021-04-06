@@ -2,7 +2,7 @@ package com.whitbread.demo.service;
 
 import com.whitbread.demo.model.Hotel;
 import com.whitbread.demo.model.HotelList;
-import com.whitbread.demo.service.impl.HotelServiceImpl;
+import com.whitbread.demo.service.impl.GetHotelService;
 import com.whitbread.demo.util.HotelTestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class HotelServiceTest {
 
     @Autowired
-    HotelServiceImpl service;
+    GetHotelService service;
 
     @Before
     public void setUp(){
@@ -76,7 +76,7 @@ public class HotelServiceTest {
         final var headersSpecMock3 = Mockito.mock(WebClient.RequestHeadersSpec.class);
         final var responseSpecMock3 = Mockito.mock(WebClient.ResponseSpec.class);
 
-        service= new HotelServiceImpl(mock);
+        service= new GetHotelService(mock);
         when(mock.get()).thenReturn(uriSpecMock);
         when(uriSpecMock.uri(ArgumentMatchers.endsWith("?hotelCodes=ABEAIB"))).thenReturn(headersSpecMock1);
         when(headersSpecMock1.header(notNull(), notNull())).thenReturn(headersSpecMock1);

@@ -1,7 +1,6 @@
 package com.whitbread.demo.service;
 
 import com.whitbread.demo.model.HotelList;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

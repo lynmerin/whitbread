@@ -12,23 +12,24 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class HotelServiceImpl implements HotelService {
+public class GetHotelService implements HotelService {
 
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(5);
 
     private final WebClient loadHotelApi;
 
     @Autowired
-    public HotelServiceImpl(WebClient loadHotelApi) {
+    public GetHotelService(WebClient loadHotelApi) {
         this.loadHotelApi = loadHotelApi;
     }
 
     /**
-     * Service method to call from the controller to get the hotel details based on filter and soting.
+     * Service method to call from the controller to get the hotel details based on filter and sorting.
      * @param hotelCodes
      * @param facilityCodes
      * @param sortByTripAdvisor
@@ -60,13 +61,13 @@ public class HotelServiceImpl implements HotelService {
     }
 
     /**
-     * TO filter the hotel List based on list of facilities
+     * To filter the hotel List based on list of facilities
      * @param facilityCodes
      * @param listToBeFiltered
      */
     private void filterHotelsWithFacility(List<String> facilityCodes, HotelList listToBeFiltered) {
         List<Hotel> hotelsFilteredList = listToBeFiltered.getHotels().stream().filter(hotel ->
-                hotel.getFacilities().stream().map(Facility::getCode).collect(Collectors.toList()).containsAll(facilityCodes)
+                new HashSet<>(hotel.getFacilities().stream().map(Facility::getCode).collect(Collectors.toList())).containsAll(facilityCodes)
         ).collect(Collectors.toList());
         listToBeFiltered.setHotels(hotelsFilteredList);
         listToBeFiltered.setTotal(hotelsFilteredList.size());
@@ -80,7 +81,7 @@ public class HotelServiceImpl implements HotelService {
     private void sortHotelListBasedOnAdvisorRating(String sortByTripAdvisor, HotelList listToBeSorted) {
         if ("ASC".equalsIgnoreCase(sortByTripAdvisor))
             listToBeSorted.getHotels().sort(Comparator.comparingDouble((Hotel o) -> o.getTripAdvisor().getRating()).thenComparing(Comparator.comparing(Hotel::getCode)));
-         else if ("DESC".equalsIgnoreCase(sortByTripAdvisor))
+        else if ("DESC".equalsIgnoreCase(sortByTripAdvisor))
             listToBeSorted.getHotels().sort(Comparator.comparingDouble((Hotel o)  -> o.getTripAdvisor().getRating()).reversed().thenComparing(Comparator.comparing(Hotel::getCode)));
 
     }

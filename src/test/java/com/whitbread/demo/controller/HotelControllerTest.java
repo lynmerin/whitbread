@@ -2,7 +2,7 @@ package com.whitbread.demo.controller;
 
 import com.whitbread.demo.model.Hotel;
 import com.whitbread.demo.model.HotelList;
-import com.whitbread.demo.service.impl.HotelServiceImpl;
+import com.whitbread.demo.service.impl.GetHotelService;
 import com.whitbread.demo.util.HotelTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,14 +20,14 @@ import static  org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@AutoConfigureWebTestClient
+//@AutoConfigureWebTestClient - Can be used for fine grained config setting (ex: set timeout)
 @WebFluxTest(controllers = HotelController.class)
 public class HotelControllerTest {
     @Autowired
     WebTestClient webTestClient;
 
     @MockBean
-    private HotelServiceImpl service;
+    private GetHotelService service;
 
     @Test
     public void getSingleHotelValidCode() throws Exception {
@@ -207,6 +207,8 @@ public class HotelControllerTest {
         HotelTestHelper.addFacitilityToList(h1, "LFT", "Lift Access");
         HotelTestHelper.addFacitilityToList(h1, "CPF", "Free parking");
         HotelTestHelper.addFacitilityToList(h2, "LFT", "Lift Access");
+        HotelTestHelper.addRatingToHotel(h1, 2.3);
+        HotelTestHelper.addRatingToHotel(h2, 2.4);
         when(service.getHotelDetails(Arrays.asList("ABEAIB", "BANWOB"), Arrays.asList("LFT"), "ASC")).thenReturn(list);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("hotelCodes", "ABEAIB,BANWOB");

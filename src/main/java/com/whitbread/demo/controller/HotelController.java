@@ -23,7 +23,7 @@ public class HotelController {
      * @return
      */
     @GetMapping
-    public HotelList getHotelDetails(@RequestParam(value = "hotelCodes", required = true) final List<String> hotelCodes, @RequestParam(value= "facilityCodes", required = false) final List<String> facilityCodes, @RequestParam(value="sortByTripAdvisor", required = false) final String sortByTripAdvisor ){
+    public HotelList getHotelDetails(@RequestParam(value = "hotelCodes") final List<String> hotelCodes, @RequestParam(value= "facilityCodes", required = false) final List<String> facilityCodes, @RequestParam(value="sortByTripAdvisor", required = false) final String sortByTripAdvisor ){
         return service.getHotelDetails(hotelCodes, facilityCodes,sortByTripAdvisor);
     }
 }
